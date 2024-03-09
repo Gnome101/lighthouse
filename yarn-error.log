@@ -1,0 +1,32 @@
+Arguments: 
+  /home/thegnome/.nvm/versions/node/v18.8.0/bin/node /home/thegnome/.cache/node/corepack/yarn/1.22.19/bin/yarn.js add axios ethers @lighthouse-web3/sdk
+
+PATH: 
+  /home/thegnome/.vscode-server/bin/1e790d77f81672c49be070e04474901747115651/bin/remote-cli:/home/thegnome/.local/bin:/home/thegnome/.cargo/bin:/home/thegnome/.nvm/versions/node/v18.8.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/windows/system32:/mnt/c/windows:/mnt/c/windows/System32/Wbem:/mnt/c/windows/System32/WindowsPowerShell/v1.0/:/mnt/c/windows/System32/OpenSSH/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/Users/Administrator/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files/HP/OMEN-Broadcast/Common:/mnt/c/Program Files/nodejs/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/Program Files/MATLAB/R2023b/bin:/mnt/c/Users/alexf/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/alexf/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/alexf/AppData/Roaming/npm:/snap/bin:/home/thegnome/.foundry/bin:/home/thegnome/.foundry/bin:/home/thegnome/.foundry/bin:/home/thegnome/.foundry/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.8.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  Error: getaddrinfo EAI_AGAIN registry.yarnpkg.com
+      at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:111:26)
+
+npm manifest: 
+  {
+    "name": "light",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT"
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
