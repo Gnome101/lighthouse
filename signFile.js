@@ -19,8 +19,13 @@ function signFile(filePath, privateKey) {
   const signature = Buffer.concat([sig.r, sig.s, Buffer.from([sig.v])]);
 
   console.log("Signature (hex):", signature.toString("hex"));
-  return signature.toString("hex");
+  let sigString = signature.toString("hex");
+  console.log(sigString);
+  sigString[sigString.length - 1] = "0";
+  sigString[sigString.length - 2] = "0";
+
+  return sigString;
 }
 
 // Replace 'path/to/howdy.txt' with the actual file path
-signFile("data.parquet", privateKey);
+signFile("path/to/howdy.txt", privateKey);

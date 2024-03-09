@@ -1,13 +1,9 @@
 require("dotenv").config();
 const axios = require("axios");
-const qs = require("qs");
-
 const fs = require("fs");
-const ethUtil = require("ethereumjs-util");
 
-const { keccak256 } = require("ethereum-cryptography/keccak");
-const { sign } = require("ethereum-cryptography/secp256k1");
-const { toRpcSig } = require("ethereumjs-util");
+const qs = require("qs");
+const ethUtil = require("ethereumjs-util");
 
 async function createVault(vaultID, account, cache) {
   try {
@@ -44,9 +40,33 @@ function signFile(filePath, privateKey) {
 
   // Combine the r, s, and v values to obtain the signature
   const signature = Buffer.concat([sig.r, sig.s, Buffer.from([sig.v])]);
+  console.log(sig.r, sig.s);
+  let sigString = signature.toString("hex");
 
-  //   console.log("Signature (hex):", signature.toString("hex"));
-  return signature.toString("hex");
+  // Extract the last two characters and convert them to a decimal value
+  let lastTwoChars = sigString.slice(-2);
+  let decimalValue = parseInt(lastTwoChars, 16);
+
+  // Subtract 0x1b (27 in decimal)
+  decimalValue -= 0x1b;
+
+  // Handle the case where the subtraction results in a negative value
+  if (decimalValue < 0) {
+    decimalValue = 0;
+  }
+
+  // Convert the result back to hexadecimal
+  let adjustedHex = decimalValue.toString(16);
+
+  // Ensure the result is two characters long by padding with a zero if necessary
+  adjustedHex = adjustedHex.padStart(2, "0");
+
+  // Replace the last two characters with the adjusted value
+  sigString = sigString.substring(0, sigString.length - 2) + adjustedHex;
+
+  console.log(sigString);
+
+  return sigString;
 }
 async function writeEvent(vaultId, filename, timestamp, signature) {
   try {
@@ -65,7 +85,56 @@ async function writeEvent(vaultId, filename, timestamp, signature) {
     console.error("Error writing event:", error);
   }
 }
+async function listEvents(vaultId) {
+  try {
+    const url = `https://basin.tableland.xyz/vaults/${vaultId}/events`;
+    const response = await axios.get(url);
 
+    if (response.status === 200) {
+      //   console.log("Events:", response.data);
+      return response.data; // This is an array of events
+    } else {
+      console.error(
+        "Failed to list events:",
+        response.status,
+        response.statusText
+      );
+      return null;
+    }
+  } catch (error) {
+    console.error("Error listing events:", error);
+    return null;
+  }
+}
+async function downloadEvent(eventID, outputPath) {
+  try {
+    const url = `https://basin.tableland.xyz/events/${eventID}`;
+    const response = await axios.get(url, { responseType: "stream" });
+
+    if (response.status === 200) {
+      // Append .jpeg to the outputPath
+      const finalOutputPath = `${outputPath}.jpeg`;
+
+      const writer = fs.createWriteStream(finalOutputPath);
+      response.data.pipe(writer);
+
+      return new Promise((resolve, reject) => {
+        writer.on("finish", () => resolve(finalOutputPath));
+        writer.on("error", reject);
+      });
+    } else {
+      console.error(
+        "Failed to download event:",
+        response.status,
+        response.statusText
+      );
+      return null;
+    }
+  } catch (error) {
+    console.error("Error downloading event:", error);
+    return null;
+  }
+}
 async function main() {
   const vaultId = process.env.VAULT_ID;
   const account = "0x3CC6c0Bd65a7a82F55f93B3209f1b05dFf5d31e1"; // Replace with actual account
@@ -74,9 +143,13 @@ async function main() {
   //   await createVault(vaultId, account, cache);
   const privateKey = Buffer.from(process.env.PRIVATE_KEY, "hex");
 
-  const signature = await signFile("howdy.txt", privateKey);
+  const signature = signFile("howdy.txt", privateKey); //I needed to remove the last two digits from  the signature because that was the main
+  //difference it comes form the v component of the cryptograpgy
   console.log("Signature:", signature);
-  await writeEvent(vaultId, "howdy.txt", 1710018796, signature);
+  //   await writeEvent(vaultId, "howdy.txt", 171001890, signature);
+  const events = await listEvents(vaultId);
+  //[0] gives the most recent event
+  await downloadEvent(events[1].cid, "event");
 }
 
 main();
