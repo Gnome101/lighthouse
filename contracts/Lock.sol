@@ -1,34 +1,64 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.24;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
 
-// Uncomment this line to use console.log
-// import "hardhat/console.sol";
+contract Convo {
+    // string[] public allGroupChats;
+    uint256 public groupID;
+    mapping(address => uint256[]) public userChats;
+    mapping(uint256 => groupChat) public idToChat;
 
-contract Lock {
-    uint public unlockTime;
-    address payable public owner;
-
-    event Withdrawal(uint amount, uint when);
-
-    constructor(uint _unlockTime) payable {
-        require(
-            block.timestamp < _unlockTime,
-            "Unlock time should be in the future"
-        );
-
-        unlockTime = _unlockTime;
-        owner = payable(msg.sender);
+    struct groupChat {
+        string name;
+        uint256 timeCreated;
+        uint256 people;
+        string[] vaults;
     }
 
-    function withdraw() public {
-        // Uncomment this line, and the import of "hardhat/console.sol", to print a log in your terminal
-        // console.log("Unlock time is %o and block timestamp is %o", unlockTime, block.timestamp);
+    function createChat(
+        string[] calldata firstVault,
+        string calldata _name
+    ) public {
+        // require(firstVault.length == 1, "VL1");
+        idToChat[groupID] = groupChat(
+            _name,
+            block.timestamp,
+            firstVault.length,
+            firstVault
+        );
+        groupID = groupID + 1;
+    }
 
-        require(block.timestamp >= unlockTime, "You can't withdraw yet");
-        require(msg.sender == owner, "You aren't the owner");
+    function joinChat(string calldata myVault, uint256 desiredID) public {
+        if (desiredID >= groupID) {
+            revert("group chat does not exist");
+        }
+        idToChat[desiredID].vaults.push(myVault);
+        idToChat[desiredID].people++;
+        userChats[msg.sender].push(desiredID);
+    }
 
-        emit Withdrawal(address(this).balance, block.timestamp);
+    function leaveChat(uint256 desiredID) public {
+        if (desiredID >= groupID) {
+            revert("group chat does not exist");
+        }
 
-        owner.transfer(address(this).balance);
+        // Remove the chat from the user's list of chats
+        bool isRemoved = false;
+        for (uint i = 0; i < userChats[msg.sender].length; i++) {
+            if (userChats[msg.sender][i] == desiredID && !isRemoved) {
+                userChats[msg.sender][i] = userChats[msg.sender][
+                    userChats[msg.sender].length - 1
+                ];
+                userChats[msg.sender].pop();
+                isRemoved = true;
+            }
+        }
+
+        if (!isRemoved) {
+            revert("User is not in the chat");
+        }
+
+        // Decrease the number of people in the chat
+        idToChat[desiredID].people--;
     }
 }
