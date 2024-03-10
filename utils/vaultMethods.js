@@ -318,7 +318,7 @@ async function downloadEvent(eventID, outputPath) {
     return null;
   }
 }
-
+async function buildJson(vaultID) {}
 module.exports = {
   createVault,
   signFile,
