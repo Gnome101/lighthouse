@@ -3,7 +3,10 @@ const axios = require("axios");
 const fs = require("fs");
 const qs = require("qs");
 const ethUtil = require("ethereumjs-util");
-
+/* IMPORTANT NOTES*/
+//vault names must be unique per account
+//the end of the signature has a special identifer that comes from the 'v' component of the hash
+//when using js signer normally it does not work however when subtracting the eth network it does work
 async function createVault(vaultID, account, cache) {
   try {
     const data = {
@@ -111,9 +114,34 @@ async function downloadEvent(eventID, outputPath) {
     const response = await axios.get(url, { responseType: "stream" });
 
     if (response.status === 200) {
-      // Append .jpeg to the outputPath
-      const finalOutputPath = `${outputPath}.txt`;
+      const contentDisposition = response.headers["content-disposition"];
+      let filename = null;
 
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="([^"]+)"/);
+        if (filenameMatch) {
+          filename = filenameMatch[1];
+        }
+      }
+
+      if (!filename) {
+        console.error("Filename not found in Content-Disposition");
+        return null;
+      }
+      let extension = null;
+      //Add more file extension types here
+      if (filename.endsWith(".jpg")) {
+        extension = ".jpg";
+      } else if (filename.endsWith(".txt")) {
+        extension = ".txt";
+      } else if (filename.endsWith(".gif")) {
+        extension = ".gif";
+      } else {
+        console.error("Unsupported file type");
+        return null;
+      }
+
+      const finalOutputPath = `${outputPath}${extension}`;
       const writer = fs.createWriteStream(finalOutputPath);
       response.data.pipe(writer);
 
