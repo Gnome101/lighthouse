@@ -1,0 +1,11 @@
+--2024-03-10 05:23:21--  https://media3.giphy.com/media/Rlwz4m0aHgXH13jyrE/200w.gif?cid=6c09b952ljvgim1cxrzjwst3kdo496gln9tg7fwasp84taiz
+Resolving media3.giphy.com (media3.giphy.com)... 151.101.62.2, 23.235.32.32, 104.156.80.32, ...
+Connecting to media3.giphy.com (media3.giphy.com)|151.101.62.2|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 2894803 (2.8M) [image/gif]
+Saving to: ‘200w.gif?cid=6c09b952ljvgim1cxrzjwst3kdo496gln9tg7fwasp84taiz’
+
+                     200w.gif?cid=6c09b95   0%[                                                                                   ]       0  --.-KB/s                                   200w.gif?cid=6c09b952  85%[======================================================================>            ]   2.37M  11.9MB/s               200w.gif?cid=6c09b952ljvgim1cxrzjwst3kdo4 100%[==================================================================================>]   2.76M  11.8MB/s    in 0.2s    
+
+2024-03-10 05:23:21 (11.8 MB/s) - ‘200w.gif?cid=6c09b952ljvgim1cxrzjwst3kdo496gln9tg7fwasp84taiz’ saved [2894803/2894803]
+

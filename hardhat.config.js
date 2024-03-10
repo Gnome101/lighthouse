@@ -4,8 +4,9 @@ require("@nomiclabs/hardhat-ethers");
 require("solidity-coverage");
 require("hardhat-gas-reporter");
 require("hardhat-contract-sizer");
-// require("dotenv").config();
+require("dotenv").config();
 
+const REPORT_GAS = process.env.REPORT_GAS;
 module.exports = {
   defaultNetwork: "hardhat",
   networks: {
@@ -33,9 +34,19 @@ module.exports = {
             enabled: true,
             runs: 100,
           },
+          //viaIR: true,
         },
       },
     ],
+  },
+  gasReporter: {
+    enabled: REPORT_GAS,
+    currency: "USD",
+    outputFile: "gas-report.txt",
+    noColors: true,
+    coinmarketcap: process.env.COINMARKETCAP_API_KEY,
+    showTimeSpent: true,
+    token: "ETH",
   },
   mocha: {
     timeout: 30000, // 500 seconds max for running tests

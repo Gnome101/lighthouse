@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-contract Convo {
+contract TalkBlock {
     // string[] public allGroupChats;
     uint256 public groupID;
     mapping(address => uint256[]) public userChats;
@@ -17,7 +17,7 @@ contract Convo {
     function createChat(
         string[] calldata firstVault,
         string calldata _name
-    ) public {
+    ) public returns (uint256) {
         // require(firstVault.length == 1, "VL1");
         idToChat[groupID] = groupChat(
             _name,
@@ -26,6 +26,7 @@ contract Convo {
             firstVault
         );
         groupID = groupID + 1;
+        return groupID - 1;
     }
 
     function joinChat(string calldata myVault, uint256 desiredID) public {
